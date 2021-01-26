@@ -1,0 +1,22 @@
+10
+1
+5
+100000000
+300000000
+40
+20
+1
+10
+999
+
+L'ordine dei valori e':
+- SO_HOLES
+- SO_CAP_MIN
+- SO_CAP_MAX
+- SO_TIMENSEC_MIN
+- SO_TIMENSEC_MAX
+- SO_TOP_CELLS
+- SO_DURATION
+- SO_TIMEOUT
+- SO_SOURCES	/*valore personalizzato da file o formula di default*/
+- SO_TAXI	/*valore personalizzato da file o formula di default*/
