@@ -292,6 +292,7 @@ int posizionamento(int sem2id,int x,int y,cell* shd)
 {
 	struct sembuf sops;
 	struct timespec now;
+	int tnow;
 
 	sops.sem_num=INDEX(x,y);
 	sops.sem_op=-1;
