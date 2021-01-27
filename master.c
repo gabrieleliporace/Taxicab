@@ -384,13 +384,6 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 				y=rand()%SO_HEIGHT;
 				yellow_car.now=posizionamento(sem2id,x,y,shd);
 
-				if(shd[yellow_car.now].type==2){
-					msgrcv(msg_id,&mbuf,sizeof(mbuf.req),yellow_car.now+1,0);
-					yellow_car.origin=mbuf.req.origin;
-					yellow_car.dest=mbuf.req.dest;
-					yellow_car.busy=1;
-				}
-
 				sops.sem_num=1;	/*Semaforo per attendere la creazione di tutti i taxi*/
 				sops.sem_op=1;
 				semop(sem_id,&sops,1);
@@ -398,6 +391,13 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 				sops.sem_num=2;	/*Blocco per sincronizzare con l'avvio del timer*/
 				sops.sem_op=1;
 				semop(sem_id,&sops,1);
+
+				if(shd[yellow_car.now].type==2){
+					msgrcv(msg_id,&mbuf,sizeof(mbuf.req),yellow_car.now+1,0);
+					yellow_car.origin=mbuf.req.origin;
+					yellow_car.dest=mbuf.req.dest;
+					yellow_car.busy=1;
+				}
 
 				exit(EXIT_SUCCESS);
 		}
@@ -417,12 +417,8 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 	sops.sem_op=taxi+sources;
 	semop(sem_id,&sops,1);
 
-	printf("\nINIZIO SIMULAZIONE IN 2 SECONDI\n");
-	now.tv_sec=2;
-	now.tv_nsec=000000000;
-	nanosleep(&now,NULL);
-
 	now.tv_sec=1;
+	now.tv_nsec=000000000;
 	alarm(SO_DURATION);
 	while(!ender){
 		nanosleep(&now,NULL);
