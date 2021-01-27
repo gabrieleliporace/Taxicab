@@ -315,6 +315,13 @@ int posizionamento(int sem2id,int x,int y,cell* shd)
 	return tnow;
 }
 
+/*
+void goto_source(cell* shd,int now)
+{
+
+}
+ */
+
 void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi)
 {
 	int j,i,k;
@@ -397,7 +404,9 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 					yellow_car.origin=mbuf.req.origin;
 					yellow_car.dest=mbuf.req.dest;
 					yellow_car.busy=1;
-				}
+				}/*else{
+				  goto_source(shd,yellow_car.now);
+				  */
 
 				exit(EXIT_SUCCESS);
 		}

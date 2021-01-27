@@ -89,7 +89,7 @@ void set_sem_source(int sem_source,cell* shd);
 
 int posizionamento(int sem2id,int x, int y,cell* shd);
 
-void goto_source(cell*shd,int now);
+void goto_source(cell*shd,int now);	/*Da implementare, il taxi deve spostarsi da una cella non sorgente a una SO_SOURCES per poi leggere una richiesta*/
 
 /*Avvia la generazione di processi sources, taxi e del countdouwn della simulazione*/
 void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi);	
