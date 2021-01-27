@@ -206,7 +206,7 @@ void send_quest(cell* shd,int time,int msg_id,int my_mtype)
 	sigaction(SIGINT,&sa,NULL);
 
 	my_pid=getpid();
-	printf("SOURCE PID:%d, mtype:%d\n",my_pid,my_mtype);
+	printf("SOURCE PID:%d\n",my_pid);
 	while(1){
 		alarm(time);
 		while(!expired){
@@ -293,7 +293,9 @@ int posizionamento(int sem2id,int x,int y,cell* shd)
 	struct sembuf sops;
 	struct timespec now;
 	int tnow;
+	int index;
 
+	index=INDEX(x,y);
 	sops.sem_num=INDEX(x,y);
 	sops.sem_op=-1;
 	sops.sem_flg=IPC_NOWAIT;
@@ -304,11 +306,11 @@ int posizionamento(int sem2id,int x,int y,cell* shd)
 		clock_gettime(CLOCK_REALTIME,&now);
 		srand(now.tv_nsec);
 		y=rand()%SO_HEIGHT;
-		posizionamento(sem2id,x,y,shd);
+		tnow=posizionamento(sem2id,x,y,shd);
 	}else{
-		tnow=INDEX(x,y);
-		shd[INDEX(x,y)].taxi_in+=1;	/*Posiziono il taxi nella cella e ne aggiorno i valori*/
-		shd[INDEX(x,y)].on+=1;
+		tnow=index;
+		shd[index].taxi_in+=1;	/*Posiziono il taxi nella cella e ne aggiorno i valori*/
+		shd[index].on+=1;
 	}
 	return tnow;
 }
@@ -381,12 +383,11 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 				srand(now.tv_nsec);
 				y=rand()%SO_HEIGHT;
 				yellow_car.now=posizionamento(sem2id,x,y,shd);
-				printf("TAXI PID:%d, now:%d\n",getpid(),yellow_car.now);
 
 				if(shd[yellow_car.now].type==2){
 					msgrcv(msg_id,&mbuf,sizeof(mbuf.req),yellow_car.now+1,0);
 				}
-				printf("PID:%d, NOW:%d, ORIG:%d, DEST:%d\n",getpid(),yellow_car.now,mbuf.req.origin,mbuf.req.dest);
+/*				printf("PID:%d, NOW:%d, ORIG:%d, DEST:%d\n",getpid(),yellow_car.now,mbuf.req.origin,mbuf.req.dest);*/
 
 				sops.sem_num=1;	/*Semaforo per attendere la creazione di tutti i taxi*/
 				sops.sem_op=1;
@@ -414,8 +415,12 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 	sops.sem_op=taxi+sources;
 	semop(sem_id,&sops,1);
 
-	now.tv_sec=1;
+	printf("\nINIZIO SIMULAZIONE IN 2 SECONDI\n");
+	now.tv_sec=2;
 	now.tv_nsec=000000000;
+	nanosleep(&now,NULL);
+
+	now.tv_sec=1;
 	alarm(SO_DURATION);
 	while(!ender){
 		nanosleep(&now,NULL);
