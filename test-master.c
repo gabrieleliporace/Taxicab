@@ -18,7 +18,7 @@ int main()
 
     printf("\nPID_MASTER:%d\n\n",getpid());
 	sources=inizializzazione_valori();
-	so_taxi=30;
+	so_taxi=3;
 	so_sources=SO_SOURCES;
 	shd=mappa();
 	if(!check_holes(shd)){
