@@ -229,9 +229,9 @@ void send_quest(cell* shd,int time,int msg_id,int my_mtype)
 		mbuf.req.origin=my_mtype;
 	
 		if(shd[INDEX(x,y)].type==0 && INDEX(x,y)!=0){	/*Definisco la destinazione della richiesta*/
-			mbuf.req.dest=(INDEX(x-1,y));
+			mbuf.req.dest=(INDEX(x,y)-1);
 		}else if(shd[INDEX(x,y)].type==0 && INDEX(x,y)==0){
-			mbuf.req.dest=(INDEX(x+1,y));
+			mbuf.req.dest=(INDEX(x,y)+1);
 		}else{
 			mbuf.req.dest=INDEX(x,y);
 		}
@@ -265,7 +265,11 @@ void set_sem(int sem2id,cell* shd)
 
 	for(i=0;i<SO_HEIGHT;i++){
 		for(j=0;j<SO_WIDTH;j++){
-			semctl(sem2id,INDEX(j,i),SETVAL,shd[INDEX(j,i)].cap);
+			if(shd[INDEX(j,i)].type==0){
+				semctl(sem2id,INDEX(j,i),SETVAL,0);
+			}else{
+				semctl(sem2id,INDEX(j,i),SETVAL,shd[INDEX(j,i)].cap);
+			}
 		}
 	}
 }
@@ -284,10 +288,9 @@ void set_sem_source(int sem_source,cell* shd)
 	}
 }
 
-taxi posizionamento(int sem2id,int x,int y,cell* shd)
+int posizionamento(int sem2id,int x,int y,cell* shd)
 {
 	struct sembuf sops;
-	struct taxi yellow_car;
 	struct timespec now;
 
 	sops.sem_num=INDEX(x,y);
@@ -302,17 +305,11 @@ taxi posizionamento(int sem2id,int x,int y,cell* shd)
 		y=rand()%SO_HEIGHT;
 		posizionamento(sem2id,x,y,shd);
 	}else{
-		if(shd[INDEX(x,y)].type==0 && INDEX(x,y)!=0){
-			posizionamento(sem2id,x-1,y,shd);
-		}else if(shd[INDEX(x,y)].type==0 && INDEX(x,y)==0){
-			posizionamento(sem2id,x+1,y,shd);
-		}else{
-			yellow_car.now=INDEX(x,y);
-			shd[INDEX(x,y)].taxi_in+=1;	/*Posiziono il taxi nella cella e ne aggiorno i valori*/
-			shd[INDEX(x,y)].on+=1;
-		}
+		tnow=INDEX(x,y);
+		shd[INDEX(x,y)].taxi_in+=1;	/*Posiziono il taxi nella cella e ne aggiorno i valori*/
+		shd[INDEX(x,y)].on+=1;
 	}
-	return yellow_car;
+	return tnow;
 }
 
 void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi)
@@ -382,7 +379,7 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 				clock_gettime(CLOCK_REALTIME,&now);
 				srand(now.tv_nsec);
 				y=rand()%SO_HEIGHT;
-				yellow_car=posizionamento(sem2id,x,y,shd);
+				yellow_car.now=posizionamento(sem2id,x,y,shd);
 				printf("TAXI PID:%d, now:%d\n",getpid(),yellow_car.now);
 
 				if(shd[yellow_car.now].type==2){

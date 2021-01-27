@@ -87,7 +87,7 @@ void set_sem(int sem2id,cell* shd);
 
 void set_sem_source(int sem_source,cell* shd);
 
-taxi posizionamento(int sem2id,int x, int y,cell* shd);
+int posizionamento(int sem2id,int x, int y,cell* shd);
 
 /*Avvia la generazione di processi sources, taxi e del countdouwn della simulazione*/
 void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi);	
