@@ -383,6 +383,7 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 				srand(now.tv_nsec);
 				y=rand()%SO_HEIGHT;
 				yellow_car=posizionamento(sem2id,x,y,shd);
+				printf("TAXI PID:%d, now:%d\n",getpid(),yellow_car.now);
 
 				if(shd[yellow_car.now].type==2){
 					msgrcv(msg_id,&mbuf,sizeof(mbuf.req),yellow_car.now+1,0);
