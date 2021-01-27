@@ -386,8 +386,10 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 
 				if(shd[yellow_car.now].type==2){
 					msgrcv(msg_id,&mbuf,sizeof(mbuf.req),yellow_car.now+1,0);
+					yellow_car.origin=mbuf.req.origin;
+					yellow_car.dest=mbuf.req.dest;
+					yellow_car.busy=1;
 				}
-/*				printf("PID:%d, NOW:%d, ORIG:%d, DEST:%d\n",getpid(),yellow_car.now,mbuf.req.origin,mbuf.req.dest);*/
 
 				sops.sem_num=1;	/*Semaforo per attendere la creazione di tutti i taxi*/
 				sops.sem_op=1;
