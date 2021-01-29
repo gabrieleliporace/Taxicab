@@ -549,8 +549,9 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 	int x,y;
 	int time=2;
 	int s=0,t=0;
-	int sem_id,sem2id,sem_source;
+	int sem_id,sem2id,sem_source,sem_move;
 	int msg_id;
+	int vert;
 	struct sigaction sg;
 	struct sembuf sops;
 	struct taxi yellow_car;
@@ -573,6 +574,9 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 
 	sem_source=semget(SEM_KEY3,MAP,IPC_CREAT|0600);
 	set_sem_source(sem_source,shd);
+
+	sem_move=semget(SEM_KEY4,MAP,IPC_CREAT|0600);
+	set_sem(sem_move,shd);
 
 	msg_id=msgget(MSGQ_KEY,IPC_CREAT|0600);
 
@@ -625,6 +629,8 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 					yellow_car.origin=mbuf.req.origin;
 					yellow_car.dest=mbuf.req.dest;
 					yellow_car.busy=1;
+					vert=num_vert(yellow_car.dest,yellow_car.now);
+					move(shd,yellow_car.dest,yellow_car.origin,vert);
 				}else{
 				  goto_source(shd,yellow_car.now);
 				}
@@ -658,6 +664,7 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 	semctl(sem_id,0,IPC_RMID);	/*Rimuovo il semaforo*/
 	semctl(sem2id,0,IPC_RMID);	/*Rimuovo il semaforo*/
 	semctl(sem_source,0,IPC_RMID);	/*Rimuovo il semaforo*/
+	semctl(sem_move,0,IPC_RMID);	/*Rimuovo il semaforo*/
 	msgctl(msg_id,IPC_RMID,NULL);
 
 	s=0;
