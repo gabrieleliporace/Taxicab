@@ -329,63 +329,123 @@ int num_vert(int index,int now)
 	return vert;
 }
 
-void goto_source(cell* shd,int now)
+void goto_source(cell* shd,int now,int sem_move)
 {
 	int vert;
 	int index;
 
 	index=find_source(shd);
 	vert=num_vert(index,now);
-	move(shd,index,now,vert);
+	move(shd,index,now,vert,sem_move);
 }
 
-void move(cell* shd,int index,int now,int vert){
+void move(cell* shd,int index,int now,int vert,int sem_move){
 	struct timespec nsleep;
+	struct sembuf sops;
 	printf("PID:%d, INDEX:%d, now:%d\n",getpid(),index,now);
 	nsleep.tv_sec=0;
 
+	sops.sem_flg=0;
 	while(now!=index){
 		if(now>index){
 			while(vert){
 				if(shd[now-SO_WIDTH].type!=0){/*muovo verso alto di uno*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now-=SO_WIDTH;
-					shd[now].taxi_in+=1;
+
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now+(SO_WIDTH)].taxi_in+=1;
 					vert--;
+
+					sops.sem_num=now+(SO_WIDTH);
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
+
 				}else{
 					if(now%SO_WIDTH==0){/* muovo verso destra di uno*/
 						nsleep.tv_nsec=shd[now].timensec;
 						nanosleep(&nsleep,NULL);
-						shd[now].taxi_in-=1;
 						now+=1;
-						shd[now].taxi_in+=1;
+
+						sops.sem_num=now;
+						sops.sem_op=-1;
+						semop(sem_move,&sops,1);
+
+						shd[now].taxi_in-=1;
+						shd[now-1].taxi_in+=1;
+
+						sops.sem_num=now-1;
+						sops.sem_op=+1;
+						semop(sem_move,&sops,1);
+
 					}else if(SO_WIDTH%now==1){/*muovo verso sinistra di uno*/
 						nsleep.tv_nsec=shd[now].timensec;
 						nanosleep(&nsleep,NULL);
-						shd[now].taxi_in-=1;
 						now-=1;
-						shd[now].taxi_in+=1;
+
+						sops.sem_num=now;
+						sops.sem_op=-1;
+						semop(sem_move,&sops,1);
+
+						shd[now].taxi_in-=1;
+						shd[now+1].taxi_in+=1;
+
+						sops.sem_num=now+1;
+						sops.sem_op=+1;
+						semop(sem_move,&sops,1);
 					}else{
 						if(now>index && now-index<SO_WIDTH){/*muovo verso sinistra di uno*/
 							nsleep.tv_nsec=shd[now].timensec;
 							nanosleep(&nsleep,NULL);
-							shd[now].taxi_in-=1;
 							now+=1;
-							shd[now].taxi_in+=1;
+
+							sops.sem_num=now;
+							sops.sem_op=-1;
+							semop(sem_move,&sops,1);
+
+							shd[now].taxi_in-=1;
+							shd[now-1].taxi_in+=1;
+
+							sops.sem_num=now-1;
+							sops.sem_op=+1;
+							semop(sem_move,&sops,1);
+							
 						}else if(now>index && now-index>SO_WIDTH){/*muovo verso sinistra di uno*/
 							nsleep.tv_nsec=shd[now].timensec;
 							nanosleep(&nsleep,NULL);
-							shd[now].taxi_in-=1;
 							now-=1;
-							shd[now].taxi_in+=1;
+
+							sops.sem_num=now;
+							sops.sem_op=-1;
+							semop(sem_move,&sops,1);
+
+							shd[now].taxi_in-=1;
+							shd[now+1].taxi_in+=1;
+
+							sops.sem_num=now+1;
+							sops.sem_op=+1;
+							semop(sem_move,&sops,1);
+
 						}else{/*muovo verso destra di uno*/
 							nsleep.tv_nsec=shd[now].timensec;
 							nanosleep(&nsleep,NULL);
-							shd[now].taxi_in-=1;
 							now+=1;
-							shd[now].taxi_in+=1;
+							
+							sops.sem_num=now;
+							sops.sem_op=-1;
+							semop(sem_move,&sops,1);
+
+							shd[now].taxi_in-=1;
+							shd[now-1].taxi_in+=1;
+
+							sops.sem_num=now-1;
+							sops.sem_op=+1;
+							semop(sem_move,&sops,1);
 						}
 					}
 				}
@@ -395,41 +455,99 @@ void move(cell* shd,int index,int now,int vert){
 				if(shd[now+1].type!=0){/*muovo verso destra di uno*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now+=1;
-					shd[now].taxi_in+=1;
+
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now-1].taxi_in+=1;
+
+					sops.sem_num=now-1;
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
+						
 				}else{/*muovo a L verso basso-destra*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now+=SO_WIDTH;
-					shd[now].taxi_in+=1;
+
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now-(SO_WIDTH)].taxi_in+=1;
 					vert++;
+					
+					sops.sem_num=now-(SO_WIDTH);
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
+
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now+=1;
-					shd[now].taxi_in+=1;
+
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now-1].taxi_in+=1;
+
+					sops.sem_num=now-1;
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
 				}
 			}else{/*muovo verso sinistra di uno*/
 				if(shd[now-1].type!=0){
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now-=1;	
-					shd[now].taxi_in+=1;
+
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now+1].taxi_in+=1;
+
+					sops.sem_num=now+1;
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
+
 				}else{/*muovo a L verso basso-sinistra*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now+=SO_WIDTH;
-					shd[now].taxi_in+=1;
+
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now-(SO_WIDTH)].taxi_in+=1;
 					vert++;
+
+					sops.sem_num=now-(SO_WIDTH);
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
+
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now-=1;
-					shd[now].taxi_in+=1;
+
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now+1].taxi_in+=1;
+
+					sops.sem_num=now+1;
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
 				}
 			}
 
@@ -438,36 +556,81 @@ void move(cell* shd,int index,int now,int vert){
 				if(shd[now+SO_WIDTH].type!=0){/*muovo verso basso di uno*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now+=SO_WIDTH;
+
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now-(SO_WIDTH)].taxi_in+=1;
 					vert--;
-					shd[now].taxi_in+=1;
+
+					sops.sem_num=now-(SO_WIDTH);
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
 				}else{
 					if(now%SO_WIDTH==0){/*muovo verso destra di uno*/
 						nsleep.tv_nsec=shd[now].timensec;
 						nanosleep(&nsleep,NULL);
-						shd[now].taxi_in-=1;
 						now+=1;
-						shd[now].taxi_in+=1;
+
+						sops.sem_num=now;
+						sops.sem_op=-1;
+						semop(sem_move,&sops,1);
+
+						shd[now].taxi_in-=1;
+						shd[now-1].taxi_in+=1;
+
+						sops.sem_num=now-1;
+						sops.sem_op=+1;
+						semop(sem_move,&sops,1);
 					}else if(SO_WIDTH%now==1){/*muovo verso sinistra di uno*/
 						nsleep.tv_nsec=shd[now].timensec;
 						nanosleep(&nsleep,NULL);
-						shd[now].taxi_in-=1;
 						now-=1;
-						shd[now].taxi_in+=1;
+
+						sops.sem_num=now;
+						sops.sem_op=-1;
+						semop(sem_move,&sops,1);
+
+						shd[now].taxi_in-=1;
+						shd[now+1].taxi_in+=1;
+
+						sops.sem_num=now+1;
+						sops.sem_op=+1;
+						semop(sem_move,&sops,1);
 					}else{
 						if(now>index){/*muovo verso sinistra di uno*/
 							nsleep.tv_nsec=shd[now].timensec;
 							nanosleep(&nsleep,NULL);
-							shd[now].taxi_in-=1;
 							now-=1;
-							shd[now].taxi_in+=1;
+
+							sops.sem_num=now;
+							sops.sem_op=-1;
+							semop(sem_move,&sops,1);
+
+							shd[now].taxi_in-=1;
+							shd[now+1].taxi_in+=1;
+
+							sops.sem_num=now+1;
+							sops.sem_op=+1;
+							semop(sem_move,&sops,1);
 						}else{/*muovo verso destra di uno*/
 							nsleep.tv_nsec=shd[now].timensec;
 							nanosleep(&nsleep,NULL);
-							shd[now].taxi_in-=1;
 							now+=1;
-							shd[now].taxi_in+=1;
+
+							sops.sem_num=now;
+							sops.sem_op=-1;
+							semop(sem_move,&sops,1);
+
+							shd[now].taxi_in-=1;
+							shd[now-1].taxi_in+=1;
+
+							sops.sem_num=now-1;
+							sops.sem_op=+1;
+							semop(sem_move,&sops,1);
 						}
 					}
 				}
@@ -477,41 +640,97 @@ void move(cell* shd,int index,int now,int vert){
 				if(shd[now+1].type!=0){/*muovo verso destra di uno*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now+=1;
-					shd[now].taxi_in+=1;
+
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now-1].taxi_in+=1;
+
+					sops.sem_num=now-1;
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
 				}else{/*muovo a L verso basso-destra*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now+=SO_WIDTH;
-					shd[now].taxi_in+=1;
+					
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now-(SO_WIDTH)].taxi_in+=1;
 					vert++;
+
+					sops.sem_num=now-(SO_WIDTH);
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
+
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now+=1;
-					shd[now].taxi_in+=1;
+					
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now-1].taxi_in+=1;
+
+					sops.sem_num=now-1;
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
 				}
 			}else{/*muovo verso sinistra di uno*/
 				if(shd[now-1].type!=0){
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now-=1;	
-					shd[now].taxi_in+=1;
+
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now+1].taxi_in+=1;
+
+					sops.sem_num=now+1;
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
 				}else{/*muovo a L verso basso-sinistra*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now+=SO_WIDTH;
-					shd[now].taxi_in+=1;
+
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now-(SO_WIDTH)].taxi_in+=1;
 					vert++;
+
+					sops.sem_num=now-(SO_WIDTH);
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
+
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
-					shd[now].taxi_in-=1;
 					now-=1;
-					shd[now].taxi_in+=1;
+
+					sops.sem_num=now;
+					sops.sem_op=-1;
+					semop(sem_move,&sops,1);
+
+					shd[now].taxi_in-=1;
+					shd[now+1].taxi_in+=1;
+
+					sops.sem_num=now+1;
+					sops.sem_op=+1;
+					semop(sem_move,&sops,1);
 				}
 			}
 
@@ -630,9 +849,9 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 					yellow_car.dest=mbuf.req.dest;
 					yellow_car.busy=1;
 					vert=num_vert(yellow_car.dest,yellow_car.now);
-					move(shd,yellow_car.dest,yellow_car.origin,vert);
+					move(shd,yellow_car.dest,yellow_car.origin,vert,sem_move);
 				}else{
-				  goto_source(shd,yellow_car.now);
+				  goto_source(shd,yellow_car.now,sem_move);
 				}
 
 				exit(EXIT_SUCCESS);
