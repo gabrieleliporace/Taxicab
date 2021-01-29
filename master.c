@@ -333,13 +333,16 @@ void goto_source(cell* shd,int now)
 {
 	int vert;
 	int index;
-	struct timespec nsleep;
 
 	index=find_source(shd);
 	vert=num_vert(index,now);
-	nsleep.tv_sec=0;
+	move(shd,index,now,vert);
+}
 
+void move(cell* shd,int index,int now,int vert){
+	struct timespec nsleep;
 	printf("PID:%d, INDEX:%d, now:%d\n",getpid(),index,now);
+	nsleep.tv_sec=0;
 
 	while(now!=index){
 		if(now>index){
@@ -365,7 +368,13 @@ void goto_source(cell* shd,int now)
 						now-=1;
 						shd[now].taxi_in+=1;
 					}else{
-						if(now>index){/*muovo verso sinistra di uno*/
+						if(now>index && now-index<SO_WIDTH){/*muovo verso sinistra di uno*/
+							nsleep.tv_nsec=shd[now].timensec;
+							nanosleep(&nsleep,NULL);
+							shd[now].taxi_in-=1;
+							now+=1;
+							shd[now].taxi_in+=1;
+						}else if(now>index && now-index>SO_WIDTH){/*muovo verso sinistra di uno*/
 							nsleep.tv_nsec=shd[now].timensec;
 							nanosleep(&nsleep,NULL);
 							shd[now].taxi_in-=1;
@@ -465,7 +474,7 @@ void goto_source(cell* shd,int now)
 			}	
 
 			if(now<index){
-				if(shd[now+1].type!=0){/*muovo verso detra di uno*/
+				if(shd[now+1].type!=0){/*muovo verso destra di uno*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
 					shd[now].taxi_in-=1;
