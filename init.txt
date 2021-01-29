@@ -7,7 +7,7 @@
 20
 1
 10
-4
+3
 
 L'ordine dei valori e':
 - SO_HOLES
