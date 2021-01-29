@@ -321,22 +321,21 @@ void goto_source(cell* shd,int now)
 	int index;
 	index=find_source(shd);
 	for(m=0;m<SO_HEIGHT;m++){
-			if(index<=INDEX(0,m) && INDEX(0,m)<=now){
-				posso+=1;
-			}else{
-				posso+=0;
-			}
+		if(index<=INDEX(0,m) && INDEX(0,m)<=now){
+			posso+=1;
+		}else{
+			posso+=0;
 		}
 	}
 }
 
-void find_source(cell* shd)
+int find_source(cell* shd)
 {
 	int r,i,j,c=0,indice; /*r=randomico, c=contatore*/
 	struct timespec spec;
 	
-	clock_gettime(CLOCK_REALTIME, &now);
-	srand(tv_nsec);
+	clock_gettime(CLOCK_REALTIME, &spec);
+	srand(spec.tv_nsec);
 	r=rand()%SO_SOURCES;
 	
 	for(i=0;i<SO_HEIGHT;i++){
