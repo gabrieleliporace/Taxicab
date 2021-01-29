@@ -324,7 +324,7 @@ void goto_source(cell* shd,int now)
 			if(index<=INDEX(0,m) && INDEX(0,m)<=now){
 				posso+=1;
 			}else{
-				posso+=0
+				posso+=0;
 			}
 		}
 	}
