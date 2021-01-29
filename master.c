@@ -333,9 +333,11 @@ void goto_source(cell* shd,int now)
 {
 	int vert;
 	int index;
+	struct timespec nsleep;
 
 	index=find_source(shd);
 	vert=num_vert(index,now);
+	nsleep.tv_sec=0;
 
 	printf("PID:%d, INDEX:%d, now:%d\n",getpid(),index,now);
 
@@ -343,71 +345,170 @@ void goto_source(cell* shd,int now)
 		if(now>index){
 			while(vert){
 				if(shd[now-SO_WIDTH].type!=0){
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now-=SO_WIDTH;
+					shd[now].taxi_in+=1;
 					vert--;
 				}else{
 					if(now%SO_WIDTH==0){
+						nsleep.tv_nsec=shd[now].timensec;
+						nanosleep(&nsleep,NULL);
+						shd[now].taxi_in-=1;
 						now+=1;
-					}else{
+						shd[now].taxi_in+=1;
+					}else if(SO_WIDTH%now==1){
+						nsleep.tv_nsec=shd[now].timensec;
+						nanosleep(&nsleep,NULL);
+						shd[now].taxi_in-=1;
 						now-=1;
+						shd[now].taxi_in+=1;
+					}else{
+						if(now>index){
+							nsleep.tv_nsec=shd[now].timensec;
+							nanosleep(&nsleep,NULL);
+							shd[now].taxi_in-=1;
+							now-=1;
+							shd[now].taxi_in+=1;
+						}else{
+							nsleep.tv_nsec=shd[now].timensec;
+							nanosleep(&nsleep,NULL);
+							shd[now].taxi_in-=1;
+							now+=1;
+							shd[now].taxi_in+=1;
+						}
 					}
 				}
 			}
 
 			if(now<index){
 				if(shd[now+1].type!=0){
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now+=1;
+					shd[now].taxi_in+=1;
 				}else{
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now+=SO_WIDTH;
+					shd[now].taxi_in+=1;
 					vert++;
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now+=1;
+					shd[now].taxi_in+=1;
 				}
 			}else{
-				if(shd[now+1].type!=0){
+				if(shd[now-1].type!=0){
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now-=1;	
+					shd[now].taxi_in+=1;
 				}else{
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now+=SO_WIDTH;
+					shd[now].taxi_in+=1;
 					vert++;
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now-=1;
+					shd[now].taxi_in+=1;
 				}
 			}
 
 		}else{
 			while(vert){
 				if(shd[now+SO_WIDTH].type!=0){
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now+=SO_WIDTH;
 					vert--;
+					shd[now].taxi_in+=1;
 				}else{
 					if(now%SO_WIDTH==0){
+						nsleep.tv_nsec=shd[now].timensec;
+						nanosleep(&nsleep,NULL);
+						shd[now].taxi_in-=1;
 						now+=1;
-					}else{
+						shd[now].taxi_in+=1;
+					}else if(SO_WIDTH%now==1){
+						nsleep.tv_nsec=shd[now].timensec;
+						nanosleep(&nsleep,NULL);
+						shd[now].taxi_in-=1;
 						now-=1;
+						shd[now].taxi_in+=1;
+					}else{
+						if(now>index){
+							nsleep.tv_nsec=shd[now].timensec;
+							nanosleep(&nsleep,NULL);
+							shd[now].taxi_in-=1;
+							now-=1;
+							shd[now].taxi_in+=1;
+						}else{
+							nsleep.tv_nsec=shd[now].timensec;
+							nanosleep(&nsleep,NULL);
+							shd[now].taxi_in-=1;
+							now+=1;
+							shd[now].taxi_in+=1;
+						}
 					}
 				}
 			}	
 
 			if(now<index){
 				if(shd[now+1].type!=0){
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now+=1;
+					shd[now].taxi_in+=1;
 				}else{
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now+=SO_WIDTH;
+					shd[now].taxi_in+=1;
 					vert++;
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now+=1;
+					shd[now].taxi_in+=1;
 				}
 			}else{
-				if(shd[now+1].type!=0){
+				if(shd[now-1].type!=0){
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now-=1;	
+					shd[now].taxi_in+=1;
 				}else{
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now+=SO_WIDTH;
+					shd[now].taxi_in+=1;
 					vert++;
+					nsleep.tv_nsec=shd[now].timensec;
+					nanosleep(&nsleep,NULL);
+					shd[now].taxi_in-=1;
 					now-=1;
+					shd[now].taxi_in+=1;
 				}
 			}
 
 		}
 	}
-	shd[index].taxi_in+=1;
-	printf("PID:%d, INDEX:%d, now:%d\n",getpid(),index,now);
+	printf("DPID:%d, INDEX:%d, now:%d\n",getpid(),index,now);
 }
 
 int find_source(cell* shd)
@@ -415,7 +516,7 @@ int find_source(cell* shd)
 	int r,i,j,c=0,indice; /*r=randomico, c=contatore*/
 	struct timespec spec;
 	
-	clock_gettime(CLOCK_REALTIME, &spec);
+	clock_gettime(CLOCK_REALTIME,&spec);
 	srand(spec.tv_nsec);
 	r=rand()%SO_SOURCES;
 	
@@ -424,9 +525,8 @@ int find_source(cell* shd)
 			if(shd[INDEX(j, i)].type==2){
 				if(c==r){
 					indice=INDEX(j, i);
-				}else{
-					c+=1;
 				}
+					c+=1;
 			}
 		}
 	}

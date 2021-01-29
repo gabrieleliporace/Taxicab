@@ -36,19 +36,19 @@ typedef struct quest{
 	int dest;
 }quest;
 
-typedef struct taxi{
-	int busy;
-	int origin;
-	int dest;
-	int now;	/*posizione corrente*/
-}taxi;
-
 typedef struct stat{
 	int m_pid;
 	int	score;	/*Richieste prese in carico totali*/
 	int cells;	/*Celle attraversate*/
 	int tempo;	/*Tempo della corsa presa in carico*/
 }stat;
+
+typedef struct taxi{
+	int busy;
+	int origin;
+	int dest;
+	int now;	/*posizione corrente*/
+}taxi;
 
 struct msgbuf {
 	long mtype;
