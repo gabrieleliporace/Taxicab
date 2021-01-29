@@ -315,12 +315,45 @@ int posizionamento(int sem2id,int x,int y,cell* shd)
 	return tnow;
 }
 
-/*
 void goto_source(cell* shd,int now)
 {
-
+	int m,posso;
+	int index;
+	index=find_source(shd);
+	for(m=0;m<SO_HEIGHT;m++){
+			if(index<=INDEX(0,m) && INDEX(0,m)<=now){
+				posso+=1;
+			}else{
+				posso+=0
+			}
+		}
+	}
 }
- */
+
+void find_source(cell* shd)
+{
+	int r,i,j,c=0,indice; /*r=randomico, c=contatore*/
+	struct timespec spec;
+	
+	clock_gettime(CLOCK_REALTIME, &now);
+	srand(tv_nsec);
+	r=rand()%SO_SOURCES;
+	
+	for(i=0;i<SO_HEIGHT;i++){
+		for(j=0;j<SO_WIDTH;j++){
+			if(shd[INDEX(j, i)].type==2){
+				if(c==r){
+					indice=INDEX(j, i);
+					
+				}else{
+					c+=1;
+				}
+			}
+		}
+	}
+	return indice;
+}
+
 
 void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi)
 {
