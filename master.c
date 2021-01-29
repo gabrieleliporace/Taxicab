@@ -344,7 +344,7 @@ void goto_source(cell* shd,int now)
 	while(now!=index){
 		if(now>index){
 			while(vert){
-				if(shd[now-SO_WIDTH].type!=0){
+				if(shd[now-SO_WIDTH].type!=0){/*muovo verso alto di uno*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
 					shd[now].taxi_in-=1;
@@ -352,26 +352,26 @@ void goto_source(cell* shd,int now)
 					shd[now].taxi_in+=1;
 					vert--;
 				}else{
-					if(now%SO_WIDTH==0){
+					if(now%SO_WIDTH==0){/* muovo verso destra di uno*/
 						nsleep.tv_nsec=shd[now].timensec;
 						nanosleep(&nsleep,NULL);
 						shd[now].taxi_in-=1;
 						now+=1;
 						shd[now].taxi_in+=1;
-					}else if(SO_WIDTH%now==1){
+					}else if(SO_WIDTH%now==1){/*muovo verso sinistra di uno*/
 						nsleep.tv_nsec=shd[now].timensec;
 						nanosleep(&nsleep,NULL);
 						shd[now].taxi_in-=1;
 						now-=1;
 						shd[now].taxi_in+=1;
 					}else{
-						if(now>index){
+						if(now>index){/*muovo verso sinistra di uno*/
 							nsleep.tv_nsec=shd[now].timensec;
 							nanosleep(&nsleep,NULL);
 							shd[now].taxi_in-=1;
 							now-=1;
 							shd[now].taxi_in+=1;
-						}else{
+						}else{/*muovo verso destra di uno*/
 							nsleep.tv_nsec=shd[now].timensec;
 							nanosleep(&nsleep,NULL);
 							shd[now].taxi_in-=1;
@@ -383,13 +383,13 @@ void goto_source(cell* shd,int now)
 			}
 
 			if(now<index){
-				if(shd[now+1].type!=0){
+				if(shd[now+1].type!=0){/*muovo verso destra di uno*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
 					shd[now].taxi_in-=1;
 					now+=1;
 					shd[now].taxi_in+=1;
-				}else{
+				}else{/*muovo a L verso basso-destra*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
 					shd[now].taxi_in-=1;
@@ -402,14 +402,14 @@ void goto_source(cell* shd,int now)
 					now+=1;
 					shd[now].taxi_in+=1;
 				}
-			}else{
+			}else{/*muovo verso sinistra di uno*/
 				if(shd[now-1].type!=0){
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
 					shd[now].taxi_in-=1;
 					now-=1;	
 					shd[now].taxi_in+=1;
-				}else{
+				}else{/*muovo a L verso basso-sinistra*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
 					shd[now].taxi_in-=1;
@@ -426,7 +426,7 @@ void goto_source(cell* shd,int now)
 
 		}else{
 			while(vert){
-				if(shd[now+SO_WIDTH].type!=0){
+				if(shd[now+SO_WIDTH].type!=0){/*muovo verso basso di uno*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
 					shd[now].taxi_in-=1;
@@ -434,26 +434,26 @@ void goto_source(cell* shd,int now)
 					vert--;
 					shd[now].taxi_in+=1;
 				}else{
-					if(now%SO_WIDTH==0){
+					if(now%SO_WIDTH==0){/*muovo verso destra di uno*/
 						nsleep.tv_nsec=shd[now].timensec;
 						nanosleep(&nsleep,NULL);
 						shd[now].taxi_in-=1;
 						now+=1;
 						shd[now].taxi_in+=1;
-					}else if(SO_WIDTH%now==1){
+					}else if(SO_WIDTH%now==1){/*muovo verso sinistra di uno*/
 						nsleep.tv_nsec=shd[now].timensec;
 						nanosleep(&nsleep,NULL);
 						shd[now].taxi_in-=1;
 						now-=1;
 						shd[now].taxi_in+=1;
 					}else{
-						if(now>index){
+						if(now>index){/*muovo verso sinistra di uno*/
 							nsleep.tv_nsec=shd[now].timensec;
 							nanosleep(&nsleep,NULL);
 							shd[now].taxi_in-=1;
 							now-=1;
 							shd[now].taxi_in+=1;
-						}else{
+						}else{/*muovo verso destra di uno*/
 							nsleep.tv_nsec=shd[now].timensec;
 							nanosleep(&nsleep,NULL);
 							shd[now].taxi_in-=1;
@@ -465,13 +465,13 @@ void goto_source(cell* shd,int now)
 			}	
 
 			if(now<index){
-				if(shd[now+1].type!=0){
+				if(shd[now+1].type!=0){/*muovo verso detra di uno*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
 					shd[now].taxi_in-=1;
 					now+=1;
 					shd[now].taxi_in+=1;
-				}else{
+				}else{/*muovo a L verso basso-destra*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
 					shd[now].taxi_in-=1;
@@ -484,14 +484,14 @@ void goto_source(cell* shd,int now)
 					now+=1;
 					shd[now].taxi_in+=1;
 				}
-			}else{
+			}else{/*muovo verso sinistra di uno*/
 				if(shd[now-1].type!=0){
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
 					shd[now].taxi_in-=1;
 					now-=1;	
 					shd[now].taxi_in+=1;
-				}else{
+				}else{/*muovo a L verso basso-sinistra*/
 					nsleep.tv_nsec=shd[now].timensec;
 					nanosleep(&nsleep,NULL);
 					shd[now].taxi_in-=1;
