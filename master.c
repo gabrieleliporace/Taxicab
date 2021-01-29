@@ -315,18 +315,99 @@ int posizionamento(int sem2id,int x,int y,cell* shd)
 	return tnow;
 }
 
-void goto_source(cell* shd,int now)
+int num_vert(int index,int now)
 {
-	int m,posso;
-	int index;
-	index=find_source(shd);
+	int vert=0,m;
 	for(m=0;m<SO_HEIGHT;m++){
-		if(index<=INDEX(0,m) && INDEX(0,m)<=now){
-			posso+=1;
+		if((now<=INDEX(0,m) && INDEX(0,m)<=index) ||
+				(index<=INDEX(0,m) && INDEX(0,m)<=now)){
+			vert+=1;
 		}else{
-			posso+=0;
+			vert+=0;
 		}
 	}
+	return vert;
+}
+
+void goto_source(cell* shd,int now)
+{
+	int vert;
+	int index;
+
+	index=find_source(shd);
+	vert=num_vert(index,now);
+
+	printf("PID:%d, INDEX:%d, now:%d\n",getpid(),index,now);
+
+	while(now!=index){
+		if(now>index){
+			while(vert){
+				if(shd[now-SO_WIDTH].type!=0){
+					now-=SO_WIDTH;
+					vert--;
+				}else{
+					if(now%SO_WIDTH==0){
+						now+=1;
+					}else{
+						now-=1;
+					}
+				}
+			}
+
+			if(now<index){
+				if(shd[now+1].type!=0){
+					now+=1;
+				}else{
+					now+=SO_WIDTH;
+					vert++;
+					now+=1;
+				}
+			}else{
+				if(shd[now+1].type!=0){
+					now-=1;	
+				}else{
+					now+=SO_WIDTH;
+					vert++;
+					now-=1;
+				}
+			}
+
+		}else{
+			while(vert){
+				if(shd[now+SO_WIDTH].type!=0){
+					now+=SO_WIDTH;
+					vert--;
+				}else{
+					if(now%SO_WIDTH==0){
+						now+=1;
+					}else{
+						now-=1;
+					}
+				}
+			}	
+
+			if(now<index){
+				if(shd[now+1].type!=0){
+					now+=1;
+				}else{
+					now+=SO_WIDTH;
+					vert++;
+					now+=1;
+				}
+			}else{
+				if(shd[now+1].type!=0){
+					now-=1;	
+				}else{
+					now+=SO_WIDTH;
+					vert++;
+					now-=1;
+				}
+			}
+
+		}
+	}
+	shd[index].taxi_in+=1;
+	printf("PID:%d, INDEX:%d, now:%d\n",getpid(),index,now);
 }
 
 int find_source(cell* shd)
@@ -343,7 +424,6 @@ int find_source(cell* shd)
 			if(shd[INDEX(j, i)].type==2){
 				if(c==r){
 					indice=INDEX(j, i);
-					
 				}else{
 					c+=1;
 				}
@@ -436,9 +516,9 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 					yellow_car.origin=mbuf.req.origin;
 					yellow_car.dest=mbuf.req.dest;
 					yellow_car.busy=1;
-				}/*else{
+				}else{
 				  goto_source(shd,yellow_car.now);
-				  */
+				}
 
 				exit(EXIT_SUCCESS);
 		}
