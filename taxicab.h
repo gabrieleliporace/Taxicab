@@ -13,6 +13,7 @@
 #define SEM_KEY 0x113522
 #define SEM_KEY2 0x102725
 #define SEM_KEY3 0x102326
+#define SEM_KEY4 0x193329
 #define MSGQ_KEY 0x170125
 
 /*Valori richiesi definiti in questo file per permettere l'utilizzo
