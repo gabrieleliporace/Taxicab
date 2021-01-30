@@ -358,8 +358,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now+(SO_WIDTH)].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now+(SO_WIDTH)].taxi_in-=1;
 					vert--;
 
 					sops.sem_num=now+(SO_WIDTH);
@@ -376,8 +376,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 						sops.sem_op=-1;
 						semop(sem_move,&sops,1);
 
-						shd[now].taxi_in-=1;
-						shd[now-1].taxi_in+=1;
+						shd[now].taxi_in+=1;
+						shd[now-1].taxi_in-=1;
 
 						sops.sem_num=now-1;
 						sops.sem_op=+1;
@@ -392,8 +392,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 						sops.sem_op=-1;
 						semop(sem_move,&sops,1);
 
-						shd[now].taxi_in-=1;
-						shd[now+1].taxi_in+=1;
+						shd[now].taxi_in+=1;
+						shd[now+1].taxi_in-=1;
 
 						sops.sem_num=now+1;
 						sops.sem_op=+1;
@@ -408,8 +408,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 							sops.sem_op=-1;
 							semop(sem_move,&sops,1);
 
-							shd[now].taxi_in-=1;
-							shd[now-1].taxi_in+=1;
+							shd[now].taxi_in+=1;
+							shd[now-1].taxi_in-=1;
 
 							sops.sem_num=now-1;
 							sops.sem_op=+1;
@@ -424,8 +424,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 							sops.sem_op=-1;
 							semop(sem_move,&sops,1);
 
-							shd[now].taxi_in-=1;
-							shd[now+1].taxi_in+=1;
+							shd[now].taxi_in+=1;
+							shd[now+1].taxi_in-=1;
 
 							sops.sem_num=now+1;
 							sops.sem_op=+1;
@@ -440,8 +440,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 							sops.sem_op=-1;
 							semop(sem_move,&sops,1);
 
-							shd[now].taxi_in-=1;
-							shd[now-1].taxi_in+=1;
+							shd[now].taxi_in+=1;
+							shd[now-1].taxi_in-=1;
 
 							sops.sem_num=now-1;
 							sops.sem_op=+1;
@@ -461,8 +461,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now-1].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now-1].taxi_in-=1;
 
 					sops.sem_num=now-1;
 					sops.sem_op=+1;
@@ -477,8 +477,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now-(SO_WIDTH)].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now-(SO_WIDTH)].taxi_in-=1;
 					vert++;
 					
 					sops.sem_num=now-(SO_WIDTH);
@@ -493,8 +493,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now-1].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now-1].taxi_in-=1;
 
 					sops.sem_num=now-1;
 					sops.sem_op=+1;
@@ -510,8 +510,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now+1].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now+1].taxi_in-=1;
 
 					sops.sem_num=now+1;
 					sops.sem_op=+1;
@@ -526,8 +526,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now-(SO_WIDTH)].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now-(SO_WIDTH)].taxi_in-=1;
 					vert++;
 
 					sops.sem_num=now-(SO_WIDTH);
@@ -542,8 +542,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now+1].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now+1].taxi_in-=1;
 
 					sops.sem_num=now+1;
 					sops.sem_op=+1;
@@ -562,8 +562,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now-(SO_WIDTH)].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now-(SO_WIDTH)].taxi_in-=1;
 					vert--;
 
 					sops.sem_num=now-(SO_WIDTH);
@@ -579,8 +579,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 						sops.sem_op=-1;
 						semop(sem_move,&sops,1);
 
-						shd[now].taxi_in-=1;
-						shd[now-1].taxi_in+=1;
+						shd[now].taxi_in+=1;
+						shd[now-1].taxi_in-=1;
 
 						sops.sem_num=now-1;
 						sops.sem_op=+1;
@@ -594,8 +594,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 						sops.sem_op=-1;
 						semop(sem_move,&sops,1);
 
-						shd[now].taxi_in-=1;
-						shd[now+1].taxi_in+=1;
+						shd[now].taxi_in+=1;
+						shd[now+1].taxi_in-=1;
 
 						sops.sem_num=now+1;
 						sops.sem_op=+1;
@@ -610,8 +610,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 							sops.sem_op=-1;
 							semop(sem_move,&sops,1);
 
-							shd[now].taxi_in-=1;
-							shd[now+1].taxi_in+=1;
+							shd[now].taxi_in+=1;
+							shd[now+1].taxi_in-=1;
 
 							sops.sem_num=now+1;
 							sops.sem_op=+1;
@@ -625,8 +625,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 							sops.sem_op=-1;
 							semop(sem_move,&sops,1);
 
-							shd[now].taxi_in-=1;
-							shd[now-1].taxi_in+=1;
+							shd[now].taxi_in+=1;
+							shd[now-1].taxi_in-=1;
 
 							sops.sem_num=now-1;
 							sops.sem_op=+1;
@@ -646,8 +646,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now-1].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now-1].taxi_in-=1;
 
 					sops.sem_num=now-1;
 					sops.sem_op=+1;
@@ -661,8 +661,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now-(SO_WIDTH)].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now-(SO_WIDTH)].taxi_in-=1;
 					vert++;
 
 					sops.sem_num=now-(SO_WIDTH);
@@ -677,8 +677,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now-1].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now-1].taxi_in-=1;
 
 					sops.sem_num=now-1;
 					sops.sem_op=+1;
@@ -694,8 +694,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now+1].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now+1].taxi_in-=1;
 
 					sops.sem_num=now+1;
 					sops.sem_op=+1;
@@ -709,8 +709,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now-(SO_WIDTH)].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now-(SO_WIDTH)].taxi_in-=1;
 					vert++;
 
 					sops.sem_num=now-(SO_WIDTH);
@@ -725,8 +725,8 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 					sops.sem_op=-1;
 					semop(sem_move,&sops,1);
 
-					shd[now].taxi_in-=1;
-					shd[now+1].taxi_in+=1;
+					shd[now].taxi_in+=1;
+					shd[now+1].taxi_in-=1;
 
 					sops.sem_num=now+1;
 					sops.sem_op=+1;
@@ -843,18 +843,20 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 				sops.sem_op=1;
 				semop(sem_id,&sops,1);
 
-				if(shd[yellow_car.now].type==2){
-					msgrcv(msg_id,&mbuf,sizeof(mbuf.req),yellow_car.now+1,0);
-					yellow_car.origin=mbuf.req.origin;
-					yellow_car.dest=mbuf.req.dest;
-					yellow_car.busy=1;
-					vert=num_vert(yellow_car.dest,yellow_car.now);
-					move(shd,yellow_car.dest,yellow_car.origin,vert,sem_move);
-				}else{
-				  goto_source(shd,yellow_car.now,sem_move);
-				}
+				while(1){
+					if(shd[yellow_car.now].type==2){
+						msgrcv(msg_id,&mbuf,sizeof(mbuf.req),yellow_car.now+1,0);
+						yellow_car.origin=mbuf.req.origin;
+						yellow_car.dest=mbuf.req.dest;
+						yellow_car.busy=1;
+						vert=num_vert(yellow_car.dest,yellow_car.now);
+						move(shd,yellow_car.dest,yellow_car.origin,vert,sem_move);
+					}else{
+					  goto_source(shd,yellow_car.now,sem_move);
+					}
 
-				exit(EXIT_SUCCESS);
+					exit(EXIT_SUCCESS);
+				}
 		}
 	}
 
