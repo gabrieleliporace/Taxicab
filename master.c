@@ -855,6 +855,7 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 				srand(now.tv_nsec);
 				y=rand()%SO_HEIGHT;
 				yellow_car.now=posizionamento(sem2id,x,y,shd);
+				yellow_car.busy=0;
 
 				sops.sem_num=1;	/*Semaforo per attendere la creazione di tutti i taxi*/
 				sops.sem_op=1;
@@ -871,9 +872,11 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 						yellow_car.dest=mbuf.req.dest;
 						yellow_car.busy=1;
 						vert=num_vert(yellow_car.dest,yellow_car.now);
-						move(shd,yellow_car.dest,yellow_car.origin,vert,sem_move);
+						move(shd,yellow_car.dest,yellow_car.now,vert,sem_move);
+						yellow_car.busy=0;
 					}else{
-					  goto_source(shd,yellow_car.now,sem_move);
+					 	goto_source(shd,yellow_car.now,sem_move);
+						yellow_car.busy=0;
 					}
 
 					exit(EXIT_SUCCESS);
