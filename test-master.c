@@ -12,7 +12,7 @@ int main()
 	cell* shd;
 	int sources;
 	int status;
-	int i=0,so_sources=3,so_taxi=0;
+	int i=0,so_sources,so_taxi;
 	pid_t *all_origin;
 	pid_t *all_taxi;
 
@@ -28,6 +28,7 @@ int main()
 	stampa_matrice(shd);
 	all_origin=malloc(so_sources*sizeof(*all_origin));
 	all_taxi=malloc(so_taxi*sizeof(*all_taxi));
+
 	simulation(shd,all_origin,all_taxi,so_sources,so_taxi);
 
 	while(wait(&status)!=-1){

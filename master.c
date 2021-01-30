@@ -11,7 +11,7 @@
 #include <time.h>	
 
 #define CHILD_NAME "./mappa"
-int expired=0,s=0;
+int expired=0,s=0,o=1;
 int successi=0,inevasi=0,abortiti=0;	/*Tipologie di viaggi per la stampa finale*/
 
 int  inizializzazione_valori()
@@ -189,6 +189,14 @@ void p_handler(int signum){	/*Handler per la durata della simulazione*/
 	switch(signum){
 		case SIGALRM:
 			ender=5;
+			break;
+	}
+}
+
+void t_handler(int signum){	/*Handler per la durata della simulazione*/
+	switch(signum){
+		case SIGALRM:
+			o=0;
 			break;
 	}
 }
@@ -784,7 +792,70 @@ int find_source(cell* shd)
 	}
 	return indice;
 }
+void make_run_taxi(pid_t *all_taxi,cell* shd,int taxi,int sem_id,int sem2id,int sem_move,int msg_id)
+{
+	int i,j;
+	int vert;
+	int x,y;
+	int t;
 
+	struct sigaction st;
+	struct taxi yellow_car;
+	struct timespec now;
+	struct msgbuf mbuf;
+	struct sembuf sops;
+
+	for(t=0;t<taxi;t++){
+		switch(all_taxi[t]=fork()){
+			case 0:
+				free(all_taxi);
+
+				bzero(&st, sizeof(st));
+				st.sa_handler=t_handler;
+				sigaction(SIGALRM,&st,NULL);
+
+				clock_gettime(CLOCK_REALTIME,&now);
+				srand(now.tv_nsec);
+				x=rand()%SO_WIDTH;
+				clock_gettime(CLOCK_REALTIME,&now);
+				srand(now.tv_nsec);
+				y=rand()%SO_HEIGHT;
+				yellow_car.now=posizionamento(sem2id,x,y,shd);
+				yellow_car.busy=0;
+
+				sops.sem_num=1;	/*Semaforo per attendere la creazione di tutti i taxi*/
+				sops.sem_op=1;
+				semop(sem_id,&sops,1);
+
+				sops.sem_num=2;	/*Blocco per sincronizzare con l'avvio del timer*/
+				sops.sem_op=1;
+				semop(sem_id,&sops,1);
+
+				while(1){
+					if(shd[yellow_car.now].type==2){
+						alarm(SO_TIMEOUT);
+						msgrcv(msg_id,&mbuf,sizeof(mbuf.req),yellow_car.now+1,0);
+						alarm(0);
+						if(o){
+						yellow_car.origin=mbuf.req.origin;
+						yellow_car.dest=mbuf.req.dest;
+						yellow_car.busy=1;
+						vert=num_vert(yellow_car.dest,yellow_car.now);
+						yellow_car.now=move(shd,yellow_car.dest,yellow_car.now,vert,sem_move);
+						yellow_car.busy=0;
+						}else{
+							printf("PID:%d, TIMEOUT\n",getpid());
+							shd[yellow_car.now].taxi_in-=1;
+							exit(EXIT_FAILURE);
+						}
+					}else{
+					 	yellow_car.now=goto_source(shd,yellow_car.now,sem_move);
+						yellow_car.busy=0;
+					}
+				}
+		}
+	}
+}
 
 void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi)
 {
@@ -797,9 +868,7 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 	int vert;
 	struct sigaction sg;
 	struct sembuf sops;
-	struct taxi yellow_car;
 	struct timespec now;
-	struct msgbuf mbuf;
 
 	bzero(&sg, sizeof(sg));
 	sg.sa_handler=p_handler;
@@ -846,45 +915,7 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 		}
 	}
 
-	for(t=0;t<taxi;t++){
-		switch(all_taxi[t]=fork()){
-			case 0:
-				free(all_taxi);
-
-				clock_gettime(CLOCK_REALTIME,&now);
-				srand(now.tv_nsec);
-				x=rand()%SO_WIDTH;
-				clock_gettime(CLOCK_REALTIME,&now);
-				srand(now.tv_nsec);
-				y=rand()%SO_HEIGHT;
-				yellow_car.now=posizionamento(sem2id,x,y,shd);
-				yellow_car.busy=0;
-
-				sops.sem_num=1;	/*Semaforo per attendere la creazione di tutti i taxi*/
-				sops.sem_op=1;
-				semop(sem_id,&sops,1);
-
-				sops.sem_num=2;	/*Blocco per sincronizzare con l'avvio del timer*/
-				sops.sem_op=1;
-				semop(sem_id,&sops,1);
-
-				while(1){
-					if(shd[yellow_car.now].type==2){
-						msgrcv(msg_id,&mbuf,sizeof(mbuf.req),yellow_car.now+1,0);
-						yellow_car.origin=mbuf.req.origin;
-						yellow_car.dest=mbuf.req.dest;
-						yellow_car.busy=1;
-						vert=num_vert(yellow_car.dest,yellow_car.now);
-						yellow_car.now=move(shd,yellow_car.dest,yellow_car.now,vert,sem_move);
-						yellow_car.busy=0;
-					}else{
-					 	yellow_car.now=goto_source(shd,yellow_car.now,sem_move);
-						yellow_car.busy=0;
-					}
-				}
-		}
-	}
-
+	make_run_taxi(all_taxi,shd,taxi,sem_id,sem2id,sem_move,msg_id);
 	ender=0;
 
 	sops.sem_num=0;	/*Lascio partire le sources*/
