@@ -342,7 +342,6 @@ void goto_source(cell* shd,int now,int sem_move)
 void move(cell* shd,int index,int now,int vert,int sem_move){
 	struct timespec nsleep;
 	struct sembuf sops;
-	printf("PID:%d, INDEX:%d, now:%d\n",getpid(),index,now);
 	nsleep.tv_sec=0;
 
 	sops.sem_flg=0;
@@ -759,7 +758,6 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 
 		}
 	}
-	printf("DPID:%d, INDEX:%d, now:%d\n",getpid(),index,now);
 }
 
 int find_source(cell* shd)
