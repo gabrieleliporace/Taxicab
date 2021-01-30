@@ -329,19 +329,21 @@ int num_vert(int index,int now)
 	return vert;
 }
 
-void goto_source(cell* shd,int now,int sem_move)
+int goto_source(cell* shd,int now,int sem_move)
 {
 	int vert;
 	int index;
 
 	index=find_source(shd);
 	vert=num_vert(index,now);
-	move(shd,index,now,vert,sem_move);
+	now=move(shd,index,now,vert,sem_move);
+	return now;
 }
 
-void move(cell* shd,int index,int now,int vert,int sem_move){
+int move(cell* shd,int index,int now,int vert,int sem_move){
 	struct timespec nsleep;
 	struct sembuf sops;
+	printf("PID:%d, now:%d, dest:%d\n",getpid(),now,index);
 	nsleep.tv_sec=0;
 
 	sops.sem_flg=0;
@@ -758,6 +760,7 @@ void move(cell* shd,int index,int now,int vert,int sem_move){
 
 		}
 	}
+	return now;
 }
 
 int find_source(cell* shd)
@@ -872,14 +875,12 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 						yellow_car.dest=mbuf.req.dest;
 						yellow_car.busy=1;
 						vert=num_vert(yellow_car.dest,yellow_car.now);
-						move(shd,yellow_car.dest,yellow_car.now,vert,sem_move);
+						yellow_car.now=move(shd,yellow_car.dest,yellow_car.now,vert,sem_move);
 						yellow_car.busy=0;
 					}else{
-					 	goto_source(shd,yellow_car.now,sem_move);
+					 	yellow_car.now=goto_source(shd,yellow_car.now,sem_move);
 						yellow_car.busy=0;
 					}
-
-					exit(EXIT_SUCCESS);
 				}
 		}
 	}
