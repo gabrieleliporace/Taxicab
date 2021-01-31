@@ -835,20 +835,26 @@ void make_run_taxi(pid_t *all_taxi,cell* shd,int taxi,int sem_id,int sem2id,int 
 
 			while(1){
 				if(shd[yellow_car.now].type==2){
-					alarm(SO_TIMEOUT);
-					msgrcv(msg_id,&mbuf,sizeof(mbuf.req),yellow_car.now+1,0);
-					alarm(0);
+					alarm(SO_TIMEOUT);	/*Parte il timer per la lettura*/
+					msgrcv(msg_id,&mbuf,sizeof(mbuf.req),yellow_car.now+1,0);	/*Problema: tutti i taxi eliminati con timeout 1 nella configurazione dense*/
+					alarm(0);	/*Annullo il timer se ci ho messo meno di SO_TIMEOUT*/
 					if(o){
 						yellow_car.origin=mbuf.req.origin;
 						yellow_car.dest=mbuf.req.dest;
 						yellow_car.busy=1;
 						vert=num_vert(yellow_car.dest,yellow_car.now);
 						yellow_car.now=move(shd,yellow_car.dest,yellow_car.now,vert,sem_move);
+						/*Aggiungere arrivo e destinazione a un messaggio da inviare per le statistiche, da inizializzare la seconda coda*/
+						/*Tipo messaggio 1 perche' viaggio riuscito, altrimenti 0 se abortito,da capire gli inevasi*/
+						/*			
+						 *mbuf.mtype=1;
+						 *msgsnd(m_id2,&mbuf,0,0);
+						 */	
 						yellow_car.busy=0;
 					}else{
-						printf("PID:%d, TIMEOUT\n",getpid());
+						printf("PID:%d, TIMEOUT\n",getpid());	/*Se scatta il timer uccido il processo e lo rimuovo dalla cella*/
 						shd[yellow_car.now].taxi_in-=1;
-						exit(EXIT_FAILURE);
+						exit(EXIT_FAILURE);	/*Idea: se il padre riceve dalla wait uno status uguale a FAILURE genera un altro figlio*/
 					}
 				}else{
 				 	yellow_car.now=goto_source(shd,yellow_car.now,sem_move);
@@ -892,6 +898,9 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 	set_sem(sem_move,shd);
 
 	msg_id=msgget(MSGQ_KEY,IPC_CREAT|0600);
+	/*
+	 *m_id2=msgget(MSGQ_KEY2,IPC_CREAT|0600);
+	 */
 
 	printf("I PROCESSI SOURCES SONO:\n");
 	for(i=0;i<sources;i++){
@@ -917,7 +926,7 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 	}
 
 	for(t=0;t<taxi;t++){
-		make_run_taxi(all_taxi,shd,taxi,sem_id,sem2id,sem_move,msg_id,t);
+		make_run_taxi(all_taxi,shd,taxi,sem_id,sem2id,sem_move,msg_id,t);	/*Aggiungere m_id2 agli argomenti*/
 	}
 	ender=0;
 
@@ -946,6 +955,10 @@ void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi
 	semctl(sem_source,0,IPC_RMID);	/*Rimuovo il semaforo*/
 	semctl(sem_move,0,IPC_RMID);	/*Rimuovo il semaforo*/
 	msgctl(msg_id,IPC_RMID,NULL);
+	/*Per stampa_finale devo leggere dalla coda e usare dei contatori per definire divisioni viaggi*/
+	/*
+	 *msgctl(m_id2,IPC_RMID,NULL);
+	 */
 
 	s=0;
 	for(s=0;s<sources;s++){

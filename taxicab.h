@@ -15,6 +15,7 @@
 #define SEM_KEY3 0x102326
 #define SEM_KEY4 0x193329
 #define MSGQ_KEY 0x170125
+#define MSGQ_KEY2 0x000102
 
 /*Valori richiesi definiti in questo file per permettere l'utilizzo
  sia nel file taxicab-module.c che in test-taxicab-module.c*/
@@ -113,7 +114,5 @@ void stampa_finale();	/*Stampa alla fine della simulazione*/
   - taxi con tempo viaggio piu' lungo,
   - taxi con piu' richieste raccolte
 */
-
-/*void make_source(cell* shd,pid_t *all_origin,int sources);*/
 
 #endif
