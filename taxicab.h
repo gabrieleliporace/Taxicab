@@ -94,7 +94,7 @@ int goto_source(cell*shd,int now,int sem_move);	/*Da implementare, il taxi deve 
 
 int move(cell* shd,int index,int now,int vert,int sem_move);
 
-void make_run_taxi(pid_t *all_taxi,cell* shd,int taxi,int sem_id,int sem2id,int sem_move,int msg_id);
+void make_run_taxi(pid_t *all_taxi,cell* shd,int taxi,int sem_id,int sem2id,int sem_move,int msg_id,int t);
 
 /*Avvia la generazione di processi sources, taxi e del countdouwn della simulazione*/
 void simulation(cell* shd,pid_t *all_origin,pid_t *all_taxi,int sources,int taxi);	
