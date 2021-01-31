@@ -836,12 +836,12 @@ void make_run_taxi(pid_t *all_taxi,cell* shd,int taxi,int sem_id,int sem2id,int 
 					msgrcv(msg_id,&mbuf,sizeof(mbuf.req),yellow_car.now+1,0);
 					alarm(0);
 					if(o){
-					yellow_car.origin=mbuf.req.origin;
-					yellow_car.dest=mbuf.req.dest;
-					yellow_car.busy=1;
-					vert=num_vert(yellow_car.dest,yellow_car.now);
-					yellow_car.now=move(shd,yellow_car.dest,yellow_car.now,vert,sem_move);
-					yellow_car.busy=0;
+						yellow_car.origin=mbuf.req.origin;
+						yellow_car.dest=mbuf.req.dest;
+						yellow_car.busy=1;
+						vert=num_vert(yellow_car.dest,yellow_car.now);
+						yellow_car.now=move(shd,yellow_car.dest,yellow_car.now,vert,sem_move);
+						yellow_car.busy=0;
 					}else{
 						printf("PID:%d, TIMEOUT\n",getpid());
 						shd[yellow_car.now].taxi_in-=1;
