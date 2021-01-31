@@ -792,6 +792,7 @@ int find_source(cell* shd)
 	}
 	return indice;
 }
+
 void make_run_taxi(pid_t *all_taxi,cell* shd,int taxi,int sem_id,int sem2id,int sem_move,int msg_id)
 {
 	int i,j;
