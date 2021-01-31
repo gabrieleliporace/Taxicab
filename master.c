@@ -185,7 +185,8 @@ void my_handler(int signum)	/*Handler per la generazione di richieste*/
 	}
 }
 
-void p_handler(int signum){	/*Handler per la durata della simulazione*/
+void p_handler(int signum)	/*Handler per la durata della simulazione*/
+{
 	switch(signum){
 		case SIGALRM:
 			ender=5;
@@ -193,7 +194,8 @@ void p_handler(int signum){	/*Handler per la durata della simulazione*/
 	}
 }
 
-void t_handler(int signum){	/*Handler per la durata della simulazione*/
+void t_handler(int signum)
+{	
 	switch(signum){
 		case SIGALRM:
 			o=0;
@@ -348,7 +350,8 @@ int goto_source(cell* shd,int now,int sem_move)
 	return now;
 }
 
-int move(cell* shd,int index,int now,int vert,int sem_move){
+int move(cell* shd,int index,int now,int vert,int sem_move)
+{
 	struct timespec nsleep;
 	struct sembuf sops;
 	printf("PID:%d, now:%d, dest:%d\n",getpid(),now,index);
